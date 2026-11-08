@@ -1,7 +1,8 @@
-mod decode;
+mod transform;
 
 use clap::{Parser, builder::StringValueParser};
-use decode::{Value, try_all};
+use std::process::Command;
+use transform::{Value, try_all};
 
 #[derive(Parser)]
 #[command(name = "revbreaker", about = "Decoding and RE helper")]
