@@ -1,3 +1,4 @@
+mod python_transforms;
 mod transform;
 
 use clap::{Parser, builder::StringValueParser};
@@ -24,7 +25,19 @@ fn main() {
     let args = Args::parse();
     let input = Value::Bytes(args.decode.as_bytes().to_vec());
 
-    let results = try_all(&input);
+    let mut results: Vec<(String, Value)> = try_all(&input)
+        .into_iter()
+        .map(|(name, v)| (name.to_string(), v))
+        .collect();
+
+    let py_results =
+        python_transforms::python_transforms(args.decode.as_bytes()).unwrap_or_default();
+
+    results.extend(
+        py_results
+            .into_iter()
+            .map(|(name, bytes)| (name, Value::Bytes(bytes))),
+    );
 
     if results.is_empty() {
         println!("no decoder matched");
