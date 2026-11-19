@@ -3,14 +3,12 @@ use std::fmt;
 
 pub enum Value {
     Bytes(Vec<u8>),
-    Int(i128),
 }
 
 impl fmt::Display for Value {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Value::Bytes(b) => write!(f, "{}", String::from_utf8_lossy(b)),
-            Value::Int(n) => write!(f, "{}", n),
         }
     }
 }
@@ -21,7 +19,6 @@ fn hex_decode(v: &Value) -> Option<Value> {
             let s = std::str::from_utf8(b).ok()?;
             hex::decode(s.trim()).ok().map(Value::Bytes)
         }
-        _ => None,
     }
 }
 
@@ -31,7 +28,6 @@ fn base64_decode(v: &Value) -> Option<Value> {
             let s = std::str::from_utf8(b).ok()?;
             BASE64_STANDARD.decode(s.trim()).ok().map(Value::Bytes)
         }
-        _ => None,
     }
 }
 
