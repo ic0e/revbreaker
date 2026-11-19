@@ -2,6 +2,7 @@ mod python_transforms;
 mod transform;
 
 use clap::{Parser, builder::StringValueParser};
+use colored::Colorize;
 use std::process::exit;
 use transform::{Value, try_all};
 
@@ -49,7 +50,8 @@ fn main() {
         for (name, value) in &results {
             let text = value.to_string();
             if text.contains(exp) {
-                println!("{:<10} {}", name, text);
+                let colored = text.replace(exp, &exp.green().to_string());
+                println!("{:<10} {}", name, colored);
             }
         }
     }
