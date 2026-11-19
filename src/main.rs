@@ -2,7 +2,7 @@ mod python_transforms;
 mod transform;
 
 use clap::{Parser, builder::StringValueParser};
-use std::process::Command;
+use std::process::exit;
 use transform::{Value, try_all};
 
 #[derive(Parser)]
@@ -24,6 +24,7 @@ struct Args {
 fn main() {
     let args = Args::parse();
     let input = Value::Bytes(args.decode.as_bytes().to_vec());
+    let expected = args.expected;
 
     let mut results: Vec<(String, Value)> = try_all(&input)
         .into_iter()
@@ -40,8 +41,19 @@ fn main() {
     );
 
     if results.is_empty() {
-        println!("no decoder matched");
+        println!("no decoder output");
+        exit(0);
     }
+    println!("EXPECTED RESULTS:");
+    if let Some(exp) = &expected {
+        for (name, value) in &results {
+            let text = value.to_string();
+            if text.contains(exp) {
+                println!("{:<10} {}", name, text);
+            }
+        }
+    }
+    println!("ALL RESULTS:");
     for (name, value) in results {
         println!("{:<10} {}", name, value);
     }
