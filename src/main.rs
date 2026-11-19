@@ -57,6 +57,6 @@ fn main() {
     }
     println!("ALL RESULTS:");
     for (name, value) in results {
-        println!("{:<10} {}", name, value);
+        println!("{:<10} {}", name.cyan(), value);
     }
 }
